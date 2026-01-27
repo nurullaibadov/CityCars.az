@@ -83,12 +83,13 @@ const CarDetails: React.FC = () => {
     };
 
     const handleToggleFavorite = () => {
+        const isAdding = !isFavorite(car.id);
         toggleFavorite(car.id);
         toast({
-            title: isFavorite(car.id) ? 'Removed from Favorites' : 'Added to Favorites',
-            description: isFavorite(car.id)
-                ? 'Car removed from your wishlist'
-                : 'Car added to your wishlist',
+            title: isAdding ? 'Added to Favorites' : 'Removed from Favorites',
+            description: isAdding
+                ? 'Car added to your wishlist'
+                : 'Car removed from your wishlist',
         });
     };
 

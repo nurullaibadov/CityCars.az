@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { useFavoritesStore } from '@/hooks/useFavoritesStore';
 import { useToast } from '@/hooks/use-toast';
 import { motion } from 'framer-motion';
+import MouseTilt from '@/components/ui/mouse-tilt';
 import car1 from '@/assets/car-1.jpg';
 import car2 from '@/assets/car-2.jpg';
 import car3 from '@/assets/car-3.jpg';
@@ -75,13 +76,14 @@ const FeaturedCars: React.FC = () => {
 
   const handleToggleFavorite = (carId: number, carName: string, e: React.MouseEvent) => {
     e.stopPropagation();
+    const isAdding = !isFavorite(carId);
     toggleFavorite(carId);
 
     toast({
-      title: isFavorite(carId) ? 'Removed from Favorites' : 'Added to Favorites',
-      description: isFavorite(carId)
-        ? `${carName} has been removed from your wishlist.`
-        : `${carName} has been added to your wishlist.`,
+      title: isAdding ? 'Added to Favorites' : 'Removed from Favorites',
+      description: isAdding
+        ? `${carName} has been added to your wishlist.`
+        : `${carName} has been removed from your wishlist.`,
     });
   };
 
@@ -134,83 +136,85 @@ const FeaturedCars: React.FC = () => {
               transition={{ delay: index * 0.1 }}
               viewport={{ once: true }}
             >
-              <Card className="group overflow-hidden rounded-[2rem] border-border/40 bg-card hover:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] transition-all duration-700 hover:-translate-y-2">
-                <div
-                  className="relative h-72 overflow-hidden cursor-pointer"
-                  onClick={() => navigate(`/cars/${car.id}`)}
-                >
-                  <img
-                    src={car.image}
-                    alt={car.name}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
-                  />
-
-                  {/* Overlay on Hover */}
-                  <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
-                    <div className="w-16 h-16 rounded-full glass-card border-white/20 flex items-center justify-center scale-90 group-hover:scale-100 transition-transform duration-500">
-                      <ArrowRight className="w-6 h-6 text-white" />
-                    </div>
-                  </div>
-
-                  <div className="absolute top-6 right-6">
-                    <div className="glass-card px-3 py-1.5 rounded-full flex items-center gap-1.5 border-white/20">
-                      <Star className="w-3.5 h-3.5 fill-accent text-accent" />
-                      <span className="text-xs font-bold text-white uppercase">{car.rating}</span>
-                    </div>
-                  </div>
-
-                  <div className="absolute top-6 left-6">
-                    <span className="px-4 py-1.5 rounded-full accent-gradient text-[10px] font-bold uppercase tracking-wider text-accent-foreground shadow-lg">
-                      {car.tag}
-                    </span>
-                  </div>
-
-                  <button
-                    onClick={(e) => handleToggleFavorite(car.id, car.name, e)}
-                    className="absolute bottom-6 left-6 w-12 h-12 rounded-full glass-card border-white/20 flex items-center justify-center hover:scale-110 transition-transform shadow-xl group/fav"
+              <MouseTilt intensity={10}>
+                <Card className="group overflow-hidden rounded-[2rem] border-border/40 bg-card hover:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] transition-all duration-700 hover:-translate-y-2 holographic-shine">
+                  <div
+                    className="relative h-72 overflow-hidden cursor-pointer"
+                    onClick={() => navigate(`/cars/${car.id}`)}
                   >
-                    <Heart
-                      className={`w-5 h-5 transition-colors ${isFavorite(car.id) ? 'fill-red-500 text-red-500' : 'text-white'}`}
+                    <img
+                      src={car.image}
+                      alt={car.name}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
                     />
-                  </button>
-                </div>
 
-                <CardContent className="p-8">
-                  <div className="flex justify-between items-start mb-6">
-                    <div>
-                      <p className="text-xs font-bold uppercase tracking-widest text-accent mb-2">{car.category}</p>
-                      <h3 className="text-2xl font-display font-bold text-foreground group-hover:text-accent transition-colors">{car.name}</h3>
+                    {/* Overlay on Hover */}
+                    <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
+                      <div className="w-16 h-16 rounded-full glass-card border-white/20 flex items-center justify-center scale-90 group-hover:scale-100 transition-transform duration-500">
+                        <ArrowRight className="w-6 h-6 text-white" />
+                      </div>
                     </div>
-                    <div className="text-right">
-                      <p className="text-2xl font-bold text-foreground">${car.price}</p>
-                      <p className="text-xs text-muted-foreground font-medium uppercase tracking-tighter">Per Day</p>
+
+                    <div className="absolute top-6 right-6">
+                      <div className="glass-card px-3 py-1.5 rounded-full flex items-center gap-1.5 border-white/20">
+                        <Star className="w-3.5 h-3.5 fill-accent text-accent" />
+                        <span className="text-xs font-bold text-white uppercase">{car.rating}</span>
+                      </div>
                     </div>
+
+                    <div className="absolute top-6 left-6">
+                      <span className="px-4 py-1.5 rounded-full accent-gradient text-[10px] font-bold uppercase tracking-wider text-accent-foreground shadow-lg">
+                        {car.tag}
+                      </span>
+                    </div>
+
+                    <button
+                      onClick={(e) => handleToggleFavorite(car.id, car.name, e)}
+                      className="absolute bottom-6 left-6 w-12 h-12 rounded-full glass-card border-white/20 flex items-center justify-center hover:scale-110 transition-transform shadow-xl group/fav"
+                    >
+                      <Heart
+                        className={`w-5 h-5 transition-colors ${isFavorite(car.id) ? 'fill-red-500 text-red-500' : 'text-white'}`}
+                      />
+                    </button>
                   </div>
 
-                  <div className="grid grid-cols-3 gap-4 py-6 border-y border-border/40 mb-8">
-                    <div className="flex flex-col items-center gap-2">
-                      <Users className="w-5 h-5 text-muted-foreground" />
-                      <span className="text-xs font-bold text-foreground uppercase">{car.seats} Seats</span>
+                  <CardContent className="p-8">
+                    <div className="flex justify-between items-start mb-6">
+                      <div>
+                        <p className="text-xs font-bold uppercase tracking-widest text-accent mb-2">{car.category}</p>
+                        <h3 className="text-2xl font-display font-bold text-foreground group-hover:text-accent transition-colors">{car.name}</h3>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-2xl font-bold text-foreground">${car.price}</p>
+                        <p className="text-xs text-muted-foreground font-medium uppercase tracking-tighter">Per Day</p>
+                      </div>
                     </div>
-                    <div className="flex flex-col items-center gap-2 border-x border-border/40">
-                      <Fuel className="w-5 h-5 text-muted-foreground" />
-                      <span className="text-xs font-bold text-foreground uppercase">{car.fuel}</span>
-                    </div>
-                    <div className="flex flex-col items-center gap-2">
-                      <Settings className="w-5 h-5 text-muted-foreground" />
-                      <span className="text-xs font-bold text-foreground uppercase">Auto</span>
-                    </div>
-                  </div>
 
-                  <Button
-                    onClick={() => handleBookNow(car)}
-                    className="w-full h-14 rounded-2xl accent-gradient text-accent-foreground font-bold premium-glow flex items-center justify-center gap-3 active:scale-95 transition-all shadow-[0_10px_20px_-5px_hsla(var(--accent),0.3)]"
-                  >
-                    <Calendar className="w-4 h-4" />
-                    Secure Booking
-                  </Button>
-                </CardContent>
-              </Card>
+                    <div className="grid grid-cols-3 gap-4 py-6 border-y border-border/40 mb-8">
+                      <div className="flex flex-col items-center gap-2">
+                        <Users className="w-5 h-5 text-muted-foreground" />
+                        <span className="text-xs font-bold text-foreground uppercase">{car.seats} Seats</span>
+                      </div>
+                      <div className="flex flex-col items-center gap-2 border-x border-border/40">
+                        <Fuel className="w-5 h-5 text-muted-foreground" />
+                        <span className="text-xs font-bold text-foreground uppercase">{car.fuel}</span>
+                      </div>
+                      <div className="flex flex-col items-center gap-2">
+                        <Settings className="w-5 h-5 text-muted-foreground" />
+                        <span className="text-xs font-bold text-foreground uppercase">Auto</span>
+                      </div>
+                    </div>
+
+                    <Button
+                      onClick={() => handleBookNow(car)}
+                      className="w-full h-14 rounded-2xl accent-gradient text-accent-foreground font-bold premium-glow flex items-center justify-center gap-3 active:scale-95 transition-all shadow-[0_10px_20px_-5px_hsla(var(--accent),0.3)]"
+                    >
+                      <Calendar className="w-4 h-4" />
+                      Secure Booking
+                    </Button>
+                  </CardContent>
+                </Card>
+              </MouseTilt>
             </motion.div>
           ))}
         </div>

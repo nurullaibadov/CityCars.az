@@ -4,6 +4,8 @@ import { Mail, ArrowLeft, Car } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useLanguage } from '@/contexts/LanguageContext';
+import PremiumEffects from '@/components/shared/PremiumEffects';
+import AnimatedBackground from '@/components/shared/AnimatedBackground';
 
 const ForgotPassword: React.FC = () => {
   const { t } = useLanguage();
@@ -17,7 +19,9 @@ const ForgotPassword: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-8 bg-background">
+    <div className="min-h-screen flex items-center justify-center p-8 bg-background relative overflow-hidden">
+      <PremiumEffects />
+      <AnimatedBackground />
       <div className="w-full max-w-md">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 mb-10">
@@ -25,7 +29,7 @@ const ForgotPassword: React.FC = () => {
             <Car className="w-7 h-7 text-accent-foreground" />
           </div>
           <span className="text-2xl font-display font-bold text-foreground">
-            City<span className="text-gradient">Car</span>
+            City<span className="text-gradient">Cars</span>
           </span>
         </Link>
 

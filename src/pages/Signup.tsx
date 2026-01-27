@@ -4,6 +4,8 @@ import { Mail, Lock, Eye, EyeOff, User, Car } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useLanguage } from '@/contexts/LanguageContext';
+import PremiumEffects from '@/components/shared/PremiumEffects';
+import AnimatedBackground from '@/components/shared/AnimatedBackground';
 
 const Signup: React.FC = () => {
   const { t } = useLanguage();
@@ -22,7 +24,9 @@ const Signup: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex">
+    <div className="min-h-screen flex relative overflow-hidden">
+      <PremiumEffects />
+      <AnimatedBackground />
       {/* Left Side - Image */}
       <div className="hidden lg:block lg:w-1/2 hero-section relative">
         <div className="absolute inset-0 flex items-center justify-center p-12">
@@ -46,7 +50,7 @@ const Signup: React.FC = () => {
               <Car className="w-7 h-7 text-accent-foreground" />
             </div>
             <span className="text-2xl font-display font-bold text-foreground">
-              City<span className="text-gradient">Car</span>
+              City<span className="text-gradient">Cars</span>
             </span>
           </Link>
 

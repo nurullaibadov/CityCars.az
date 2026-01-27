@@ -48,7 +48,7 @@ const AnimatedBackground: React.FC = () => {
 
             draw() {
                 if (!ctx) return;
-                ctx.fillStyle = `rgba(139, 92, 246, ${this.opacity})`;
+                ctx.fillStyle = `rgba(185, 28, 28, ${this.opacity})`;
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
                 ctx.fill();
@@ -69,9 +69,9 @@ const AnimatedBackground: React.FC = () => {
 
             // Draw gradient background
             const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-            gradient.addColorStop(0, 'rgba(139, 92, 246, 0.03)');
-            gradient.addColorStop(0.5, 'rgba(59, 130, 246, 0.03)');
-            gradient.addColorStop(1, 'rgba(236, 72, 153, 0.03)');
+            gradient.addColorStop(0, 'rgba(185, 28, 28, 0.05)'); // Red
+            gradient.addColorStop(0.5, 'rgba(0, 0, 0, 0.05)');   // Black
+            gradient.addColorStop(1, 'rgba(212, 175, 55, 0.05)'); // Gold
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -89,7 +89,7 @@ const AnimatedBackground: React.FC = () => {
                     const distance = Math.sqrt(dx * dx + dy * dy);
 
                     if (distance < 150) {
-                        ctx.strokeStyle = `rgba(139, 92, 246, ${0.1 * (1 - distance / 150)})`;
+                        ctx.strokeStyle = `rgba(185, 28, 28, ${0.15 * (1 - distance / 150)})`;
                         ctx.lineWidth = 1;
                         ctx.beginPath();
                         ctx.moveTo(particleA.x, particleA.y);

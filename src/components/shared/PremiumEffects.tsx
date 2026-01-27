@@ -1,16 +1,29 @@
 import React, { useEffect, useState } from 'react';
+import { motion, useSpring, useMotionValue } from 'framer-motion';
 
 const PremiumEffects: React.FC = () => {
-    const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-    const [scrollPercent, setScrollPercent] = useState(0);
     const [isHovering, setIsHovering] = useState(false);
+
+    // Smooth motion values
+    const mouseX = useMotionValue(0);
+    const mouseY = useMotionValue(0);
+
+    // Spring configuration for trailing effect
+    const springConfig = { damping: 25, stiffness: 200 };
+    const trailX = useSpring(mouseX, springConfig);
+    const trailY = useSpring(mouseY, springConfig);
+
+    const springConfigFast = { damping: 15, stiffness: 300 };
+    const leadX = useSpring(mouseX, springConfigFast);
+    const leadY = useSpring(mouseY, springConfigFast);
 
     useEffect(() => {
         const handleMouseMove = (e: MouseEvent) => {
-            setMousePos({ x: e.clientX, y: e.clientY });
+            mouseX.set(e.clientX);
+            mouseY.set(e.clientY);
 
             const target = e.target as HTMLElement;
-            const isClickable = target.closest('button, a, input, select, [role="button"]');
+            const isClickable = target.closest('button, a, input, select, [role="button"], .interactive, .holographic-shine');
             setIsHovering(!!isClickable);
         };
 
@@ -18,52 +31,63 @@ const PremiumEffects: React.FC = () => {
             const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
             const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
             const scrolled = (winScroll / height) * 100;
-            setScrollPercent(scrolled);
             document.body.style.setProperty('--scroll-percent', `${scrolled}%`);
-
-            // Apply progress to body after element for CSS bar
-            const body = document.body;
-            body.style.setProperty('--scroll-width', `${scrolled}%`);
         };
 
         window.addEventListener('mousemove', handleMouseMove);
-        window.addEventListener('scroll', handleScroll);
+        window.addEventListener('scroll', handleScroll, { passive: true });
 
         return () => {
             window.removeEventListener('mousemove', handleMouseMove);
             window.removeEventListener('scroll', handleScroll);
         };
-    }, []);
-
-    // Update body::after width for scroll progress
-    useEffect(() => {
-        const style = document.createElement('style');
-        style.innerHTML = `body::after { width: ${scrollPercent}%; }`;
-        document.head.appendChild(style);
-        return () => {
-            document.head.removeChild(style);
-        };
-    }, [scrollPercent]);
+    }, [mouseX, mouseY]);
 
     return (
-        <>
-            <div
-                className={`custom-cursor ${isHovering ? 'cursor-hover' : ''}`}
+        <div className="fixed inset-0 pointer-events-none z-[9999] overflow-hidden">
+            {/* Lead Pointer */}
+            <motion.div
+                className="w-2 h-2 bg-accent rounded-full fixed"
                 style={{
-                    left: `${mousePos.x}px`,
-                    top: `${mousePos.y}px`,
-                    transform: `translate(-50%, -50%) ${isHovering ? 'scale(1.5)' : 'scale(1)'}`
+                    x: leadX,
+                    y: leadY,
+                    translateX: '-50%',
+                    translateY: '-50%',
                 }}
             />
-            <div
-                className={`custom-cursor-outer ${isHovering ? 'cursor-hover' : ''}`}
+
+            {/* Main Trail Ring */}
+            <motion.div
+                className="w-8 h-8 border border-accent/40 rounded-full fixed flex items-center justify-center"
+                animate={{
+                    scale: isHovering ? 2.5 : 1,
+                    backgroundColor: isHovering ? 'hsla(var(--accent), 0.15)' : 'transparent',
+                    borderColor: isHovering ? 'hsla(var(--accent), 0.8)' : 'hsla(var(--accent), 0.4)',
+                }}
                 style={{
-                    left: `${mousePos.x}px`,
-                    top: `${mousePos.y}px`,
-                    transform: `translate(-50%, -50%) ${isHovering ? 'scale(0.8)' : 'scale(1)'}`
+                    x: trailX,
+                    y: trailY,
+                    translateX: '-50%',
+                    translateY: '-50%',
+                }}
+            >
+                <motion.div
+                    className="w-full h-full rounded-full bg-accent/5 blur-sm"
+                    animate={{ scale: isHovering ? 1.5 : 1 }}
+                />
+            </motion.div>
+
+            {/* Accent Trail Dot */}
+            <motion.div
+                className="w-1 h-1 bg-accent/60 rounded-full fixed"
+                style={{
+                    x: trailX,
+                    y: trailY,
+                    translateX: '-50%',
+                    translateY: '-50%',
                 }}
             />
-        </>
+        </div>
     );
 };
 
