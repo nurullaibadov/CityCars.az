@@ -8,6 +8,8 @@ import FloatingActionButton from '@/components/shared/FloatingActionButton';
 import NotificationBanner from '@/components/shared/NotificationBanner';
 import CookieConsent from '@/components/shared/CookieConsent';
 import PremiumEffects from '@/components/shared/PremiumEffects';
+import AnimatedBackground from '@/components/shared/AnimatedBackground';
+import BakuContextWidget from '@/components/shared/BakuContextWidget';
 
 interface LayoutProps {
   children: ReactNode;
@@ -17,6 +19,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <div className="min-h-screen flex flex-col overflow-x-hidden">
       <PremiumEffects />
+      <AnimatedBackground />
+      <BakuContextWidget />
       <Header />
       <main className="flex-1 pt-16 md:pt-20">
         {children}

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Car, Zap, Shield, Sparkles, ArrowRight } from 'lucide-react';
 import MouseTilt from '@/components/ui/mouse-tilt';
@@ -36,6 +37,7 @@ const categories = [
 
 const FleetSpotlight: React.FC = () => {
     const [activeCategory, setActiveCategory] = useState(categories[0]);
+    const navigate = useNavigate();
 
     return (
         <section className="py-24 bg-background overflow-hidden">
@@ -101,7 +103,10 @@ const FleetSpotlight: React.FC = () => {
                                     ))}
                                 </div>
 
-                                <Button className="h-14 px-8 rounded-xl bg-foreground text-background hover:bg-foreground/90 group">
+                                <Button
+                                    onClick={() => navigate('/cars')}
+                                    className="h-14 px-8 rounded-xl bg-foreground text-background hover:bg-foreground/90 group"
+                                >
                                     Explore Full Collection <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                                 </Button>
                             </motion.div>

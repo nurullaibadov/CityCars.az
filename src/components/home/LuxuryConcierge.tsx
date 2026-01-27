@@ -1,20 +1,24 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { Car, UserCheck, Plane, Gift, MapPin, Calendar, ArrowRight } from 'lucide-react';
 import MouseTilt from '@/components/ui/mouse-tilt';
 
 const services = [
     {
+        id: 'chauffeur',
         icon: <UserCheck className="w-8 h-8" />,
         title: "Personal Chauffeur",
         description: "Professional multi-lingual drivers available for your business or tourist needs."
     },
     {
+        id: 'airport',
         icon: <Plane className="w-8 h-8" />,
         title: "Airport VIP Transfer",
         description: "Meet & Greet service at Heydar Aliyev International Airport with luggage assistance."
     },
     {
+        id: 'events',
         icon: <Gift className="w-8 h-8" />,
         title: "Event Delivery",
         description: "Special vehicle preparation for weddings, conferences, or surprise gift delivery."
@@ -22,6 +26,8 @@ const services = [
 ];
 
 const LuxuryConcierge: React.FC = () => {
+    const navigate = useNavigate();
+
     return (
         <section className="py-24 bg-muted/20 relative overflow-hidden">
             {/* Abstract Background Design */}
@@ -67,7 +73,10 @@ const LuxuryConcierge: React.FC = () => {
                                     {service.description}
                                 </p>
                                 <div className="mt-8 pt-8 border-t border-border/30 w-full flex justify-center">
-                                    <button className="flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-foreground hover:text-accent transition-colors">
+                                    <button
+                                        onClick={() => navigate(`/services/${service.id}`)}
+                                        className="flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-foreground hover:text-accent transition-colors"
+                                    >
                                         Details <ArrowRight className="w-4 h-4" />
                                     </button>
                                 </div>

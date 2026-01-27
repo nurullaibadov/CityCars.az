@@ -122,9 +122,14 @@ const HeroSection: React.FC = () => {
               </span>
             </motion.div>
 
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-display font-bold text-foreground mb-6 leading-tight">
-              <ScrollRevealText text={t('findPerfectRide')} />
-              <span className="text-gradient">.</span>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-foreground mb-6 leading-tight flex flex-col items-start gap-1">
+              <ScrollRevealText text="Find Your Perfect" />
+              <div className="flex items-center gap-4 flex-wrap">
+                <span className="relative px-6 py-1 rounded-[1.5rem] border-2 border-accent/20 elite-glass-light outline-text transform -rotate-1 hover:rotate-0 transition-transform duration-500">
+                  <ScrollRevealText text="RIDE" />
+                </span>
+                <ScrollRevealText text="in Azerbaijan" className="text-gradient" />
+              </div>
             </h1>
 
             <p className="text-xl text-muted-foreground mb-10 max-w-xl leading-relaxed">

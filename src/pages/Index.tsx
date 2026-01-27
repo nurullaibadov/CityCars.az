@@ -14,6 +14,8 @@ import VIPSection from '@/components/home/VIPSection';
 import DashboardTeaser from '@/components/home/DashboardTeaser';
 import AppShowcase from '@/components/home/AppShowcase';
 import Newsletter from '@/components/home/Newsletter';
+import Car360Viewer from '@/components/home/Car360Viewer';
+import AIConcierge from '@/components/home/AIConcierge';
 
 const Index: React.FC = () => {
   return (
@@ -21,10 +23,12 @@ const Index: React.FC = () => {
       <HeroSection />
       <BrandMarquee />
       <FeaturedCars />
+      <Car360Viewer />
       <FleetSpotlight />
       <VIPSection />
       <StatsSection />
       <LuxuryConcierge />
+      <AIConcierge />
       <WhyChooseUs />
       <HowItWorks />
       <SpecialOffers />

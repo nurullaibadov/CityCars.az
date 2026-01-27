@@ -59,6 +59,26 @@ const HowItWorks: React.FC = () => {
             {/* Ambient Background Glow */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[400px] bg-accent/5 blur-[150px] rounded-full pointer-events-none" />
 
+            {/* Liquid Process Wave (Desktop Only) */}
+            <svg className="absolute top-[40%] left-0 w-full h-32 opacity-10 pointer-events-none hidden lg:block" viewBox="0 0 1440 320">
+                <motion.path
+                    initial={{ pathLength: 0, opacity: 0 }}
+                    whileInView={{ pathLength: 1, opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 2, ease: "easeInOut" }}
+                    fill="none"
+                    stroke="url(#wave-gradient)"
+                    strokeWidth="4"
+                    d="M0,160L48,176C96,192,192,224,288,213.3C384,203,480,149,576,149.3C672,149,768,203,864,213.3C960,224,1056,192,1152,165.3C1248,139,1344,117,1392,106.7L1440,96"
+                />
+                <defs>
+                    <linearGradient id="wave-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="hsla(var(--accent), 0.5)" />
+                        <stop offset="100%" stopColor="transparent" />
+                    </linearGradient>
+                </defs>
+            </svg>
+
             <div className="container mx-auto px-4 relative z-10">
                 <div className="max-w-4xl mx-auto text-center mb-24">
                     <motion.div

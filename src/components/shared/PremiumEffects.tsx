@@ -87,6 +87,20 @@ const PremiumEffects: React.FC = () => {
                     translateY: '-50%',
                 }}
             />
+            {/* Magic Glow Follower Background */}
+            <motion.div
+                className="fixed inset-0 z-[-1] pointer-events-none opacity-40 mix-blend-screen"
+                style={{
+                    background: `radial-gradient(600px circle at ${mouseX.get()}px ${mouseY.get()}px, hsla(var(--accent), 0.15), transparent 80%)`,
+                }}
+            >
+                <div
+                    className="absolute inset-0"
+                    style={{
+                        backgroundImage: `radial-gradient(800px circle at ${mouseX.get()}px ${mouseY.get()}px, hsla(var(--accent), 0.05), transparent 70%)`
+                    }}
+                />
+            </motion.div>
         </div>
     );
 };

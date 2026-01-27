@@ -24,6 +24,7 @@ import FAQ from "./pages/FAQ";
 import PricingCalculator from "./pages/PricingCalculator";
 import Comparison from "./pages/Comparison";
 import Booking from "./pages/Booking";
+import ServiceDetails from "./pages/ServiceDetails";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -56,6 +57,7 @@ const App = () => (
               <Route path="/favorites" element={<Favorites />} />
               <Route path="/faq" element={<FAQ />} />
               <Route path="/pricing" element={<PricingCalculator />} />
+              <Route path="/services/:id" element={<ServiceDetails />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
