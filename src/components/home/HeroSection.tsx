@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { motion } from 'framer-motion';
 import heroImage from '@/assets/hero-car.jpg';
+import MagneticButton from '@/components/ui/magnetic-button';
 
 const HeroSection: React.FC = () => {
   const { t } = useLanguage();
@@ -218,13 +219,15 @@ const HeroSection: React.FC = () => {
                   </div>
                 </div>
 
-                <Button
-                  onClick={handleSearch}
-                  className="w-full h-16 text-lg font-bold accent-gradient text-accent-foreground premium-glow transition-all active:scale-95"
-                >
-                  <Search className="w-5 h-5 mr-3" />
-                  Explore Available Cars
-                </Button>
+                <MagneticButton className="w-full">
+                  <Button
+                    onClick={handleSearch}
+                    className="w-full h-16 text-lg font-bold accent-gradient text-accent-foreground premium-glow transition-all active:scale-95"
+                  >
+                    <Search className="w-5 h-5 mr-3" />
+                    Explore Available Cars
+                  </Button>
+                </MagneticButton>
 
                 <p className="text-center text-xs text-muted-foreground">
                   * No credit card required to browse our premium collection

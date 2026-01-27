@@ -34,7 +34,7 @@ const ScrollToTop: React.FC = () => {
                 <Button
                     onClick={scrollToTop}
                     size="icon"
-                    className="fixed bottom-8 right-8 z-50 w-12 h-12 rounded-full accent-gradient text-accent-foreground shadow-lg hover:opacity-90 transition-all duration-300 hover:scale-110 animate-bounce-slow"
+                    className="fixed bottom-48 right-8 z-50 w-12 h-12 rounded-full accent-gradient text-accent-foreground shadow-lg hover:opacity-90 transition-all duration-300 hover:scale-110 animate-bounce-slow"
                     aria-label="Scroll to top"
                 >
                     <ArrowUp className="w-5 h-5" />

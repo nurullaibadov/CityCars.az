@@ -34,7 +34,7 @@ const FloatingActionButton: React.FC = () => {
     const [isExpanded, setIsExpanded] = useState(false);
 
     return (
-        <div className="fixed bottom-24 right-8 z-40">
+        <div className="fixed bottom-28 right-8 z-40">
             {/* Action Buttons */}
             {isExpanded && (
                 <div className="mb-4 space-y-3 animate-slide-up">
@@ -67,8 +67,8 @@ const FloatingActionButton: React.FC = () => {
                 onClick={() => setIsExpanded(!isExpanded)}
                 size="icon"
                 className={`w-14 h-14 rounded-full shadow-lg transition-all duration-300 ${isExpanded
-                        ? 'bg-destructive hover:bg-destructive/90 rotate-90'
-                        : 'accent-gradient hover:opacity-90 hover:scale-110'
+                    ? 'bg-destructive hover:bg-destructive/90 rotate-90'
+                    : 'accent-gradient hover:opacity-90 hover:scale-110'
                     }`}
             >
                 {isExpanded ? (
