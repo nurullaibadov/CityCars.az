@@ -1,157 +1,299 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Smartphone, Apple, PlayCircle, Star, ArrowRight, Download } from 'lucide-react';
+import React, { useState } from 'react';
+import { motion, useMotionValue, useTransform, useSpring, AnimatePresence } from 'framer-motion';
+import {
+    Smartphone, Apple, PlayCircle, Star, ArrowRight, Download,
+    ShieldCheck, MapPin, Calculator, Home, Car, Cpu, User
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import MagneticButton from '@/components/ui/magnetic-button';
 
 const AppShowcase: React.FC = () => {
+    const [activeScreen, setActiveScreen] = useState('home');
+
+    // 360 Rotation Controls
+    const rotationX = useMotionValue(0);
+    const rotationY = useMotionValue(0);
+
+    const springX = useSpring(rotationX, { damping: 30, stiffness: 200 });
+    const springY = useSpring(rotationY, { damping: 30, stiffness: 200 });
+
+    // Transform drag progress to degrees
+    const rotateX = useTransform(springY, [-300, 300], [15, -15]);
+    const rotateY = useTransform(springX, [-300, 300], [-45, 45]);
+
+    const handleDrag = (_: any, info: any) => {
+        rotationX.set(rotationX.get() + info.delta.x);
+        rotationY.set(rotationY.get() + info.delta.y);
+    };
+
+    const resetRotation = () => {
+        rotationX.set(0);
+        rotationY.set(0);
+    };
+
     return (
-        <section className="py-24 relative overflow-hidden bg-muted/30">
-            <div className="container mx-auto px-4">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <section className="py-32 relative overflow-hidden bg-background">
+            {/* Ambient Background Glows */}
+            <div className="absolute top-0 right-0 w-1/4 h-1/4 accent-gradient opacity-10 blur-[150px] rounded-full" />
+            <div className="absolute bottom-0 left-0 w-1/4 h-1/4 accent-gradient opacity-10 blur-[150px] rounded-full" />
+
+            <div className="container mx-auto px-4 relative z-10">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
+
+                    {/* Visual Side: Interactive 360 Phone Mockup */}
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.8 }}
+                        initial={{ opacity: 0, scale: 0.9 }}
                         whileInView={{ opacity: 1, scale: 1 }}
                         viewport={{ once: true }}
-                        transition={{ duration: 0.8 }}
-                        className="relative"
+                        transition={{ duration: 1 }}
+                        className="relative perspective-2000 py-12"
                     >
-                        {/* Phone Mockup (Abstracted with CSS) */}
-                        <div className="relative mx-auto w-[280px] h-[580px] md:w-[320px] md:h-[650px] bg-black rounded-[50px] border-8 border-border shadow-huge overflow-hidden">
-                            {/* Screen Content */}
-                            <div className="absolute inset-0 bg-background flex flex-col pt-12">
-                                <div className="px-6 py-4 flex justify-between items-center bg-accent/5">
-                                    <span className="font-bold text-xs tracking-tighter">CITYCARS</span>
-                                    <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center">
-                                        <Star className="w-4 h-4 text-accent" />
-                                    </div>
-                                </div>
+                        {/* 360 Guidance UI */}
+                        <div className="absolute -top-12 left-1/2 -translate-x-1/2 flex items-center gap-3 glass-card px-4 py-2 rounded-full border-accent/20 animate-bounce pointer-events-none z-30">
+                            <span className="text-[10px] font-black uppercase tracking-widest text-accent">Drag to Rotate 360°</span>
+                        </div>
 
-                                <div className="p-6 space-y-6 flex-1 overflow-hidden">
-                                    <div className="space-y-2">
-                                        <div className="h-4 w-2/3 bg-muted rounded-full" />
-                                        <div className="h-4 w-full bg-muted rounded-full opacity-60" />
-                                    </div>
+                        <motion.div
+                            style={{ rotateX, rotateY, perspective: 2000 }}
+                            drag
+                            dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+                            onDrag={handleDrag}
+                            className="relative mx-auto w-[300px] h-[620px] md:w-[340px] md:h-[700px] cursor-grab active:cursor-grabbing preserve-3d group"
+                        >
+                            {/* Device Frame with High-Gloss Bezels */}
+                            <div className="absolute inset-0 bg-[#080808] rounded-[55px] border-[12px] border-[#1a1a1a] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.8)] overflow-hidden">
 
-                                    <div className="grid grid-cols-2 gap-4">
-                                        {[1, 2, 3, 4].map((i) => (
-                                            <div key={i} className="aspect-square rounded-2xl bg-accent/5 border border-accent/10 flex flex-col p-4 justify-between">
-                                                <div className="w-8 h-8 rounded-lg bg-accent/10" />
-                                                <div className="h-2 w-full bg-accent/20 rounded-full" />
+                                {/* Inner Screen Content */}
+                                <div className="absolute inset-0 bg-background flex flex-col overflow-hidden">
+                                    {/* Status Bar */}
+                                    <div className="h-12 px-8 flex justify-between items-center bg-black/40 backdrop-blur-md z-40">
+                                        <span className="text-[10px] font-bold">9:41</span>
+                                        <div className="flex gap-1.5 items-center">
+                                            <div className="w-4 h-2.5 border border-white/30 rounded-sm relative">
+                                                <div className="absolute inset-0.5 bg-white/80 rounded-sm w-3/4" />
                                             </div>
+                                        </div>
+                                    </div>
+
+                                    {/* App Container */}
+                                    <div className="flex-1 relative flex flex-col pt-4">
+                                        <AnimatePresence mode="wait">
+                                            {activeScreen === 'home' && (
+                                                <motion.div
+                                                    key="home"
+                                                    initial={{ opacity: 0, x: 20 }}
+                                                    animate={{ opacity: 1, x: 0 }}
+                                                    exit={{ opacity: 0, x: -20 }}
+                                                    className="p-6 space-y-6 flex-1 overflow-y-auto no-scrollbar"
+                                                >
+                                                    <div className="flex justify-between items-center">
+                                                        <span className="font-display font-black text-xs tracking-widest text-accent">CITYCARS</span>
+                                                        <div className="w-10 h-10 rounded-2xl glass-card border-accent/20 flex items-center justify-center">
+                                                            <User className="w-4 h-4 text-accent" />
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="space-y-2">
+                                                        <h3 className="text-xl font-bold">Welcome back,</h3>
+                                                        <p className="text-sm text-muted-foreground">Select your luxury companion</p>
+                                                    </div>
+
+                                                    <div className="glass-card elite-glass rounded-3xl p-4 space-y-4">
+                                                        <div className="aspect-video bg-muted/20 rounded-2xl overflow-hidden relative">
+                                                            <div className="absolute inset-0 accent-gradient opacity-10" />
+                                                            <div className="absolute bottom-2 left-2 text-[10px] font-bold">Lambo Revuelto</div>
+                                                        </div>
+                                                        <div className="flex justify-between items-center">
+                                                            <div className="px-3 py-1 bg-accent/20 rounded-full text-[10px] font-bold">AVAILABLE</div>
+                                                            <span className="text-xs font-bold">$1,200<span className="text-[8px] opacity-50">/DAY</span></span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="grid grid-cols-2 gap-4">
+                                                        <div className="accent-gradient rounded-3xl p-4 flex flex-col gap-2">
+                                                            <MapPin className="w-4 h-4 text-accent-foreground" />
+                                                            <span className="text-[10px] font-bold">Track Order</span>
+                                                        </div>
+                                                        <div className="glass-card border-accent/10 rounded-3xl p-4 flex flex-col gap-2">
+                                                            <ShieldCheck className="w-4 h-4 text-accent" />
+                                                            <span className="text-[10px] font-bold">Insurance</span>
+                                                        </div>
+                                                    </div>
+                                                </motion.div>
+                                            )}
+
+                                            {activeScreen === 'fleet' && (
+                                                <motion.div
+                                                    key="fleet"
+                                                    initial={{ opacity: 0, x: 20 }}
+                                                    animate={{ opacity: 1, x: 0 }}
+                                                    exit={{ opacity: 0, x: -20 }}
+                                                    className="p-6 space-y-6 flex-1 overflow-y-auto no-scrollbar"
+                                                >
+                                                    <h3 className="text-xl font-bold flex items-center gap-2">
+                                                        <Car className="text-accent w-5 h-5" /> 360 Fleet
+                                                    </h3>
+                                                    <div className="space-y-4">
+                                                        {[1, 2, 3].map(i => (
+                                                            <div key={i} className="flex items-center gap-4 p-3 glass-card border-border/50 rounded-2xl">
+                                                                <div className="w-16 h-12 bg-muted/20 rounded-xl" />
+                                                                <div className="flex-1">
+                                                                    <div className="h-2.5 w-20 bg-foreground/10 rounded-full mb-2" />
+                                                                    <div className="h-1.5 w-12 bg-muted rounded-full" />
+                                                                </div>
+                                                                <ArrowRight className="w-4 h-4 text-accent" />
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </motion.div>
+                                            )}
+
+                                            {activeScreen === 'ai' && (
+                                                <motion.div
+                                                    key="ai"
+                                                    initial={{ opacity: 0, x: 20 }}
+                                                    animate={{ opacity: 1, x: 0 }}
+                                                    exit={{ opacity: 0, x: -20 }}
+                                                    className="p-6 space-y-8 flex-1 flex flex-col items-center justify-center text-center"
+                                                >
+                                                    <div className="w-20 h-20 rounded-full accent-gradient flex items-center justify-center shadow-[0_0_30px_rgba(var(--accent-rgb),0.5)] animate-pulse">
+                                                        <Cpu className="w-10 h-10 text-accent-foreground" />
+                                                    </div>
+                                                    <div className="space-y-4">
+                                                        <h3 className="text-xl font-bold">AI Concierge</h3>
+                                                        <p className="text-xs text-muted-foreground leading-relaxed">Analyzing your preferences for the perfect Baku journey...</p>
+                                                    </div>
+                                                    <div className="w-full h-12 glass-card border-accent/20 rounded-2xl flex items-center justify-center">
+                                                        <motion.div
+                                                            animate={{ width: ['0%', '100%', '0%'] }}
+                                                            transition={{ duration: 2, repeat: Infinity }}
+                                                            className="h-full bg-accent/20 rounded-2xl"
+                                                        />
+                                                    </div>
+                                                </motion.div>
+                                            )}
+                                        </AnimatePresence>
+                                    </div>
+
+                                    {/* Interactive Tab Bar */}
+                                    <div className="h-20 bg-card/80 backdrop-blur-2xl border-t border-border flex justify-around items-center px-4 relative">
+                                        {[
+                                            { id: 'home', icon: Home },
+                                            { id: 'fleet', icon: Car },
+                                            { id: 'ai', icon: Cpu }
+                                        ].map((item) => (
+                                            <button
+                                                key={item.id}
+                                                onClick={() => setActiveScreen(item.id)}
+                                                className={`flex flex-col items-center gap-1.5 transition-all duration-300 ${activeScreen === item.id ? 'text-accent scale-110' : 'text-muted-foreground hover:text-foreground'}`}
+                                            >
+                                                <item.icon className="w-5 h-5" />
+                                                <div className={`w-1 h-1 rounded-full bg-accent transition-opacity ${activeScreen === item.id ? 'opacity-100' : 'opacity-0'}`} />
+                                            </button>
                                         ))}
                                     </div>
 
-                                    <div className="h-32 w-full glass-card rounded-2xl border-accent/20 p-4 space-y-4">
-                                        <div className="flex justify-between items-center">
-                                            <div className="h-4 w-1/2 bg-muted rounded-full" />
-                                            <div className="h-6 w-12 bg-accent/20 rounded-lg" />
-                                        </div>
-                                        <div className="h-10 w-full accent-gradient rounded-xl" />
+                                    {/* Home Indicator */}
+                                    <div className="h-6 bg-card/80 flex justify-center pb-2">
+                                        <div className="w-32 h-1 bg-foreground/10 rounded-full" />
                                     </div>
                                 </div>
 
-                                {/* Bottom Nav */}
-                                <div className="h-20 bg-background border-t border-border flex justify-around items-center px-6">
-                                    {[1, 2, 3, 4].map((i) => (
-                                        <div key={i} className={`w-8 h-8 rounded-lg ${i === 1 ? 'bg-accent/20' : 'bg-muted'}`} />
-                                    ))}
+                                {/* Dynamic Island Notch */}
+                                <div className="absolute top-2 left-1/2 -translate-x-1/2 w-28 h-7 bg-black rounded-b-3xl z-50 flex items-center justify-center px-4">
+                                    <div className="w-1 h-1 rounded-full bg-blue-500/40 mr-auto" />
+                                    <div className="w-8 h-1.5 bg-white/10 rounded-full" />
+                                    <div className="w-1.5 h-1.5 rounded-full bg-green-500/40 ml-auto" />
                                 </div>
                             </div>
 
-                            {/* Speaker/Camera notch */}
-                            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-black rounded-b-2xl" />
-                        </div>
+                            {/* Side Buttons Visual Details */}
+                            <div className="absolute top-[120px] -left-3 w-1.5 h-12 bg-[#222] rounded-l-md" />
+                            <div className="absolute top-[180px] -left-3 w-1.5 h-16 bg-[#222] rounded-l-md" />
+                            <div className="absolute top-[180px] -right-3 w-1.5 h-20 bg-[#222] rounded-r-md" />
 
-                        {/* Floating Badges */}
-                        <motion.div
-                            animate={{ y: [0, -20, 0] }}
-                            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                            className="absolute top-20 -right-4 md:-right-12 glass-card p-4 rounded-2xl border-accent/30 shadow-2xl z-20"
-                        >
-                            <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center">
-                                    <Star className="w-5 h-5 text-green-500 fill-green-500" />
+                            {/* Hotspots for specific Mobile features */}
+                            <div className="absolute top-1/2 -right-16 translate-x-1/2 flex flex-col gap-4 opacity-0 group-hover:opacity-100 transition-opacity delay-300">
+                                <div className="w-12 h-12 rounded-2xl glass-card elite-glass flex items-center justify-center border-accent/30 shadow-huge">
+                                    <Download className="w-5 h-5 text-accent" />
                                 </div>
-                                <div>
-                                    <p className="text-sm font-bold">4.9/5 Rating</p>
-                                    <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Play Store Reviews</p>
+                                <div className="w-12 h-12 rounded-2xl glass-card elite-glass flex items-center justify-center border-accent/30 shadow-huge">
+                                    <ShieldCheck className="w-5 h-5 text-accent" />
                                 </div>
                             </div>
                         </motion.div>
 
-                        <motion.div
-                            animate={{ y: [0, 20, 0] }}
-                            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                            className="absolute bottom-40 -left-6 md:-left-16 glass-card p-4 rounded-2xl border-accent/30 shadow-2xl z-20"
+                        {/* Reset Rotation Floating Action */}
+                        <motion.button
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                            onClick={resetRotation}
+                            className="absolute bottom-4 left-1/2 -translate-x-1/2 glass-card px-4 py-2 rounded-full border-accent/20 text-[8px] font-black uppercase tracking-tighter text-muted-foreground hover:text-accent transition-colors z-30"
                         >
-                            <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center text-accent">
-                                    <Download className="w-5 h-5" />
-                                </div>
-                                <div>
-                                    <p className="text-sm font-bold">50k+</p>
-                                    <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Total Downloads</p>
-                                </div>
-                            </div>
-                        </motion.div>
+                            Reset View
+                        </motion.button>
                     </motion.div>
 
+                    {/* Content Side */}
                     <motion.div
                         initial={{ opacity: 0, x: 50 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
-                        transition={{ duration: 0.8 }}
+                        transition={{ duration: 1 }}
                     >
                         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card border-accent/20 mb-8">
                             <Smartphone className="w-4 h-4 text-accent" />
-                            <span className="text-xs font-bold uppercase tracking-widest text-accent">Coming Soon to Mobile</span>
+                            <span className="text-xs font-bold uppercase tracking-widest text-accent">The 360° Experience</span>
                         </div>
 
-                        <h2 className="text-4xl md:text-6xl font-bold mb-8 leading-tight">
-                            Rent Your Next Car <br />
-                            <span className="text-gradient">From Anywhere</span>
+                        <h2 className="text-4xl md:text-6xl font-display font-bold mb-8 leading-tight">
+                            Your Elite Fleet, <br />
+                            <span className="text-gradient">Fully Mobile</span>.
                         </h2>
 
                         <p className="text-xl text-muted-foreground mb-12 max-w-lg leading-relaxed">
-                            Experience the power of CityCars in your pocket. Our upcoming mobile app
-                            features AI-recommendations, instant paperless booking, and
-                            real-time tracking of your rental delivery.
+                            Pick up the future. Interact with our virtual device to explore the upcoming
+                            CityCars ecosystem—from AI-driven choices to immersive 360° inspections.
                         </p>
 
-                        <div className="flex flex-wrap gap-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-16">
                             <MagneticButton>
-                                <Button className="h-16 px-8 rounded-2xl bg-black text-white hover:bg-black/90 flex items-center gap-3 border border-white/10">
-                                    <Apple className="w-7 h-7" />
+                                <Button className="w-full h-20 rounded-2xl bg-[#090909] text-white border border-white/5 hover:border-accent/30 flex items-center justify-start gap-4 px-6 group transition-all">
+                                    <Apple className="w-8 h-8 group-hover:scale-110 transition-transform" />
                                     <div className="text-left">
-                                        <p className="text-[10px] uppercase opacity-60 leading-none">Download on</p>
-                                        <p className="text-lg font-bold leading-tight">App Store</p>
+                                        <p className="text-[10px] uppercase opacity-50 tracking-tighter">Available soon on</p>
+                                        <p className="text-xl font-bold">App Store</p>
                                     </div>
                                 </Button>
                             </MagneticButton>
 
                             <MagneticButton>
-                                <Button className="h-16 px-8 rounded-2xl bg-black text-white hover:bg-black/90 flex items-center gap-3 border border-white/10">
-                                    <PlayCircle className="w-7 h-7" />
+                                <Button className="w-full h-20 rounded-2xl bg-[#090909] text-white border border-white/5 hover:border-accent/30 flex items-center justify-start gap-4 px-6 group transition-all">
+                                    <PlayCircle className="w-8 h-8 group-hover:scale-110 transition-transform" />
                                     <div className="text-left">
-                                        <p className="text-[10px] uppercase opacity-60 leading-none">Get it on</p>
-                                        <p className="text-lg font-bold leading-tight">Google Play</p>
+                                        <p className="text-[10px] uppercase opacity-50 tracking-tighter">Coming soon to</p>
+                                        <p className="text-xl font-bold">Google Play</p>
                                     </div>
                                 </Button>
                             </MagneticButton>
                         </div>
 
-                        <div className="mt-12 pt-12 border-t border-border/50">
-                            <div className="flex items-center gap-4 text-muted-foreground font-medium">
-                                <span className="w-12 h-px bg-border" />
-                                Notify me on launch
-                                <div className="relative flex-1">
-                                    <input
-                                        type="email"
-                                        placeholder="Enter your email"
-                                        className="w-full bg-transparent border-b border-border py-2 focus:border-accent outline-none transition-colors"
-                                    />
-                                    <ArrowRight className="absolute right-0 top-1/2 -translate-y-1/2 w-5 h-5 text-accent cursor-pointer hover:translate-x-1 transition-transform" />
+                        {/* Coming Soon Reservation Status */}
+                        <div className="pt-12 border-t border-border/50">
+                            <div className="flex items-center gap-6">
+                                <div className="flex -space-x-3">
+                                    {[1, 2, 3].map(i => (
+                                        <div key={i} className="w-10 h-10 rounded-full border-2 border-background bg-accent/20 flex items-center justify-center overflow-hidden">
+                                            <div className="w-full h-full bg-gradient-to-br from-accent to-black opacity-30" />
+                                        </div>
+                                    ))}
+                                </div>
+                                <div>
+                                    <p className="text-sm font-bold text-foreground">Mobile Launch Program</p>
+                                    <div className="flex items-center gap-2 mt-1">
+                                        <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+                                        <p className="text-xs text-accent font-black uppercase tracking-[0.2em]">Coming Soon • Q4 2026</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
