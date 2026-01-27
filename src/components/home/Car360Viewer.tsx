@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, useMotionValue, useTransform, useSpring, AnimatePresence } from 'framer-motion';
-import { RotateCcw, Maximize2, Info, ChevronLeft, ChevronRight, MousePointer2, Fingerprint, ZapOff, Key } from 'lucide-react';
+import { RotateCcw, Maximize2, Info, ChevronLeft, ChevronRight, MousePointer2, Fingerprint, ZapOff, Key, Eye, Box, Activity } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import heroImage from '@/assets/hero-car.jpg';
 
@@ -9,6 +9,8 @@ const Car360Viewer: React.FC = () => {
     const [activeHotspot, setActiveHotspot] = useState<string | null>(null);
     const [isEngineRunning, setIsEngineRunning] = useState(false);
     const [isIgniting, setIsIgniting] = useState(false);
+    const [isInteriorView, setIsInteriorView] = useState(false);
+    const [isXrayEnabled, setIsXrayEnabled] = useState(false);
     const { toast } = useToast();
 
     // Parallax & Rotation control
@@ -19,11 +21,18 @@ const Car360Viewer: React.FC = () => {
     const rotateY = useSpring(useTransform(x, [-300, 300], [-30, 30]), { damping: 20 });
 
     // Hotspots data
-    const hotspots = [
+    const exteriorHotspots = [
         { id: 'engine', x: '25%', y: '40%', title: 'V12 Performance', desc: '750HP Twin-Turbo' },
         { id: 'wheels', x: '70%', y: '65%', title: 'Forged Alloys', desc: '22" Diamond Cut' },
-        { id: 'interior', x: '50%', y: '45%', title: 'Luxury Cabin', desc: 'Alcantara & Carbon' },
+        { id: 'aero', x: '80%', y: '35%', title: 'Active Aero', desc: 'Adaptive Carbon Spoiler' },
     ];
+
+    const interiorHotspots = [
+        { id: 'cockpit', x: '50%', y: '50%', title: 'Glass Cockpit', desc: 'Dual 12" OLED Displays' },
+        { id: 'seats', x: '30%', y: '60%', title: 'Ergo-Comfort', desc: 'Nappa Leather & Massage' },
+    ];
+
+    const currentHotspots = isInteriorView ? interiorHotspots : exteriorHotspots;
 
     useEffect(() => {
         if (isAutoRotating && !isIgniting) {
@@ -107,11 +116,45 @@ const Car360Viewer: React.FC = () => {
                         >
                             {/* Main Car Image with Parallax & Reflection effect */}
                             <motion.div className="w-full h-full relative">
-                                <img
+                                <motion.img
+                                    animate={{
+                                        scale: isInteriorView ? 1.5 : 1,
+                                        filter: isXrayEnabled ? 'contrast(1.5) brightness(0.8) sepia(0.5) hue-rotate(180deg)' : 'none'
+                                    }}
                                     src={heroImage}
                                     alt="360 View"
                                     className={`w-full h-full object-contain drop-shadow-[0_50px_50px_rgba(0,0,0,0.5)] cursor-default select-none transition-all duration-700 ${isEngineRunning ? 'headlight-glow brightness-110' : ''}`}
                                 />
+
+                                {/* Active Aero: Spoiler Animation */}
+                                {!isInteriorView && (
+                                    <motion.div
+                                        animate={{
+                                            y: isEngineRunning ? -15 : 0,
+                                            rotateX: isEngineRunning ? -5 : 0,
+                                            opacity: isXrayEnabled ? 0.2 : 1
+                                        }}
+                                        className="absolute right-[15%] top-[30%] w-32 h-4 bg-foreground/10 backdrop-blur-md border border-white/5 rounded-full z-10"
+                                    />
+                                )}
+
+                                {/* X-Ray Technical Overlay */}
+                                <AnimatePresence>
+                                    {isXrayEnabled && (
+                                        <motion.div
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 0.4 }}
+                                            exit={{ opacity: 0 }}
+                                            className="absolute inset-0 pointer-events-none overflow-hidden rounded-[3rem]"
+                                        >
+                                            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20" />
+                                            <div className="w-full h-full border-[2px] border-accent/30 rounded-[3rem] animate-pulse" />
+                                            {/* SVG Technical Lines would go here, using CSS for now */}
+                                            <div className="absolute top-[40%] left-[20%] w-[40%] h-[2px] bg-accent/50 rotate-[-15deg]" />
+                                            <div className="absolute top-[60%] right-[30%] w-[30%] h-[2px] bg-accent/50 rotate-[25deg]" />
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
 
                                 {/* Light Overlays (Visual Markers for Glow) */}
                                 <AnimatePresence>
@@ -138,7 +181,7 @@ const Car360Viewer: React.FC = () => {
                             </motion.div>
 
                             {/* Hotspots */}
-                            {hotspots.map((spot) => (
+                            {currentHotspots.map((spot) => (
                                 <motion.div
                                     key={spot.id}
                                     className="absolute z-20"
@@ -188,6 +231,28 @@ const Car360Viewer: React.FC = () => {
                                 <span className="text-xs font-bold uppercase tracking-widest">
                                     {isIgniting ? 'Igniting...' : (isEngineRunning ? 'Stop Engine' : 'Start Engine')}
                                 </span>
+                            </button>
+
+                            <div className="h-4 w-px bg-border/50" />
+
+                            {/* View Toggle */}
+                            <button
+                                onClick={() => setIsInteriorView(!isInteriorView)}
+                                className={`flex items-center gap-2 transition-all duration-300 ${isInteriorView ? 'text-accent' : 'text-muted-foreground hover:text-foreground'}`}
+                            >
+                                <Eye className="w-4 h-4" />
+                                <span className="text-[10px] font-bold uppercase tracking-wider">{isInteriorView ? 'Exterior' : 'Interior'}</span>
+                            </button>
+
+                            <div className="h-4 w-px bg-border/50" />
+
+                            {/* X-Ray Toggle */}
+                            <button
+                                onClick={() => setIsXrayEnabled(!isXrayEnabled)}
+                                className={`flex items-center gap-2 transition-all duration-300 ${isXrayEnabled ? 'text-accent' : 'text-muted-foreground hover:text-foreground'}`}
+                            >
+                                <Activity className="w-4 h-4" />
+                                <span className="text-[10px] font-bold uppercase tracking-wider">X-Ray</span>
                             </button>
 
                             <div className="h-4 w-px bg-border/50" />

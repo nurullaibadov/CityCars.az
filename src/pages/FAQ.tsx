@@ -112,7 +112,7 @@ const FAQ: React.FC = () => {
     return (
         <Layout>
             {/* Header */}
-            <section className="hero-section py-20">
+            <section className="hero-section py-16 md:py-20">
                 <div className="container mx-auto px-4 text-center">
                     <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-accent/10 mb-6">
                         <HelpCircle className="w-8 h-8 text-accent" />
@@ -127,7 +127,7 @@ const FAQ: React.FC = () => {
             </section>
 
             {/* Search and Filter */}
-            <section className="py-12 bg-background">
+            <section className="py-8 bg-background">
                 <div className="container mx-auto px-4">
                     <div className="max-w-4xl mx-auto">
                         {/* Search Bar */}

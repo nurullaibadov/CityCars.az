@@ -2,13 +2,16 @@ import React, { useState } from 'react';
 import { motion, useMotionValue, useTransform, useSpring, AnimatePresence } from 'framer-motion';
 import {
     Smartphone, Apple, PlayCircle, Star, ArrowRight, Download,
-    ShieldCheck, MapPin, Calculator, Home, Car, Cpu, User
+    ShieldCheck, MapPin, Calculator, Home, Car, Cpu, User, Key, Lock, Unlock, CheckCircle
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import MagneticButton from '@/components/ui/magnetic-button';
 
 const AppShowcase: React.FC = () => {
     const [activeScreen, setActiveScreen] = useState('home');
+    const [isIslandExpanded, setIsIslandExpanded] = useState(false);
+    const [isLocked, setIsLocked] = useState(true);
+    const [bookingStep, setBookingStep] = useState('idle'); // idle, processing, success
 
     // 360 Rotation Controls
     const rotationX = useMotionValue(0);
@@ -99,8 +102,20 @@ const AppShowcase: React.FC = () => {
                                                     </div>
 
                                                     <div className="glass-card elite-glass rounded-3xl p-4 space-y-4">
-                                                        <div className="aspect-video bg-muted/20 rounded-2xl overflow-hidden relative">
+                                                        <div className="aspect-video bg-muted/20 rounded-2xl overflow-hidden relative group/card">
                                                             <div className="absolute inset-0 accent-gradient opacity-10" />
+                                                            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/card:opacity-100 transition-opacity">
+                                                                <Button
+                                                                    onClick={() => {
+                                                                        setBookingStep('processing');
+                                                                        setTimeout(() => setBookingStep('success'), 2000);
+                                                                    }}
+                                                                    size="sm"
+                                                                    className="rounded-full accent-gradient h-8 text-[10px] font-bold"
+                                                                >
+                                                                    Quick Book
+                                                                </Button>
+                                                            </div>
                                                             <div className="absolute bottom-2 left-2 text-[10px] font-bold">Lambo Revuelto</div>
                                                         </div>
                                                         <div className="flex justify-between items-center">
@@ -163,13 +178,101 @@ const AppShowcase: React.FC = () => {
                                                         <h3 className="text-xl font-bold">AI Concierge</h3>
                                                         <p className="text-xs text-muted-foreground leading-relaxed">Analyzing your preferences for the perfect Baku journey...</p>
                                                     </div>
-                                                    <div className="w-full h-12 glass-card border-accent/20 rounded-2xl flex items-center justify-center">
+                                                    <div className="w-full h-12 glass-card border-accent/20 rounded-2xl flex items-center justify-center overflow-hidden">
                                                         <motion.div
                                                             animate={{ width: ['0%', '100%', '0%'] }}
                                                             transition={{ duration: 2, repeat: Infinity }}
                                                             className="h-full bg-accent/20 rounded-2xl"
                                                         />
                                                     </div>
+                                                </motion.div>
+                                            )}
+
+                                            {activeScreen === 'keys' && (
+                                                <motion.div
+                                                    key="keys"
+                                                    initial={{ opacity: 0, scale: 0.9 }}
+                                                    animate={{ opacity: 1, scale: 1 }}
+                                                    exit={{ opacity: 0, scale: 0.9 }}
+                                                    className="p-6 space-y-8 flex-1 flex flex-col items-center justify-center"
+                                                >
+                                                    <div className="relative group/key">
+                                                        <motion.div
+                                                            animate={{ rotate: isLocked ? 0 : 5 }}
+                                                            className="w-48 h-72 glass-card elite-glass rounded-[3rem] border-accent/20 flex flex-col items-center justify-between p-8 shadow-huge relative overflow-hidden"
+                                                        >
+                                                            <div className="absolute inset-0 bg-gradient-to-b from-accent/5 to-transparent pointer-events-none" />
+                                                            <div className="text-accent">
+                                                                <span className="font-display font-black text-xs tracking-[0.3em]">CITYCARS</span>
+                                                            </div>
+                                                            <div className="flex flex-col gap-6 w-full">
+                                                                <Button
+                                                                    onClick={() => {
+                                                                        setIsIslandExpanded(true);
+                                                                        setIsLocked(!isLocked);
+                                                                        setTimeout(() => setIsIslandExpanded(false), 3000);
+                                                                    }}
+                                                                    className={`w-full h-16 rounded-2xl flex items-center justify-center transition-all ${isLocked ? 'bg-muted/10 hover:bg-muted/20' : 'accent-gradient shadow-[0_0_30px_rgba(var(--accent-rgb),0.3)]'}`}
+                                                                >
+                                                                    {isLocked ? <Unlock className="w-6 h-6 text-accent" /> : <Lock className="w-6 h-6 text-accent-foreground" />}
+                                                                </Button>
+                                                                <Button className="w-full h-16 rounded-2xl bg-muted/10 hover:bg-muted/20 flex items-center justify-center">
+                                                                    <div className="w-6 h-6 rounded-full border-2 border-accent/50 flex items-center justify-center">
+                                                                        <div className="w-2 h-2 bg-accent rounded-full animate-pulse" />
+                                                                    </div>
+                                                                </Button>
+                                                            </div>
+                                                            <div className="text-center">
+                                                                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Digital Key Active</p>
+                                                            </div>
+                                                        </motion.div>
+                                                        {/* Signal Ripples when unlocking */}
+                                                        {!isLocked && (
+                                                            <div className="absolute inset-0 pointer-events-none">
+                                                                {[1, 2, 3].map(i => (
+                                                                    <motion.div
+                                                                        key={i}
+                                                                        initial={{ opacity: 0, scale: 0.8 }}
+                                                                        animate={{ opacity: [0, 0.5, 0], scale: [1, 1.5, 2] }}
+                                                                        transition={{ duration: 2, repeat: Infinity, delay: i * 0.4 }}
+                                                                        className="absolute inset-0 border border-accent/20 rounded-[3rem]"
+                                                                    />
+                                                                ))}
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                    <p className="text-xs text-center text-muted-foreground font-medium px-4">Tap the unlock icon to connect with your vehicle via secure Bluetooth.</p>
+                                                </motion.div>
+                                            )}
+
+                                            {bookingStep !== 'idle' && (
+                                                <motion.div
+                                                    initial={{ opacity: 0, y: 20 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    className="absolute inset-x-6 top-1/2 -translate-y-1/2 z-[100] glass-card elite-glass p-8 rounded-[3rem] border-accent/30 shadow-huge text-center"
+                                                >
+                                                    {bookingStep === 'processing' ? (
+                                                        <div className="space-y-6">
+                                                            <div className="w-16 h-16 rounded-full border-4 border-accent/20 border-t-accent animate-spin mx-auto" />
+                                                            <p className="font-bold text-accent">Securing Vehicle...</p>
+                                                        </div>
+                                                    ) : (
+                                                        <div className="space-y-6">
+                                                            <div className="w-20 h-20 rounded-full bg-green-500/20 flex items-center justify-center mx-auto text-green-500">
+                                                                <CheckCircle className="w-10 h-10" />
+                                                            </div>
+                                                            <div className="space-y-2">
+                                                                <h4 className="font-display font-bold text-xl">Booking Confirmed!</h4>
+                                                                <p className="text-xs text-muted-foreground">Your luxury ride is waiting at our Baku Premium Lounge.</p>
+                                                            </div>
+                                                            <Button
+                                                                onClick={() => setBookingStep('idle')}
+                                                                className="w-full h-12 rounded-xl accent-gradient font-bold"
+                                                            >
+                                                                Dismiss
+                                                            </Button>
+                                                        </div>
+                                                    )}
                                                 </motion.div>
                                             )}
                                         </AnimatePresence>
@@ -180,6 +283,7 @@ const AppShowcase: React.FC = () => {
                                         {[
                                             { id: 'home', icon: Home },
                                             { id: 'fleet', icon: Car },
+                                            { id: 'keys', icon: Key },
                                             { id: 'ai', icon: Cpu }
                                         ].map((item) => (
                                             <button
@@ -200,11 +304,33 @@ const AppShowcase: React.FC = () => {
                                 </div>
 
                                 {/* Dynamic Island Notch */}
-                                <div className="absolute top-2 left-1/2 -translate-x-1/2 w-28 h-7 bg-black rounded-b-3xl z-50 flex items-center justify-center px-4">
-                                    <div className="w-1 h-1 rounded-full bg-blue-500/40 mr-auto" />
-                                    <div className="w-8 h-1.5 bg-white/10 rounded-full" />
-                                    <div className="w-1.5 h-1.5 rounded-full bg-green-500/40 ml-auto" />
-                                </div>
+                                <motion.div
+                                    animate={{
+                                        width: isIslandExpanded ? 200 : 112,
+                                        height: isIslandExpanded ? 40 : 28,
+                                        borderRadius: isIslandExpanded ? 20 : 24
+                                    }}
+                                    className="absolute top-2 left-1/2 -translate-x-1/2 bg-black z-50 flex items-center justify-center px-4 overflow-hidden border border-white/5"
+                                >
+                                    {isIslandExpanded ? (
+                                        <motion.div
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            className="flex items-center gap-3 w-full"
+                                        >
+                                            <div className="w-6 h-6 rounded-full bg-accent/20 flex items-center justify-center">
+                                                <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+                                            </div>
+                                            <span className="text-[10px] font-bold text-white truncate">Vehicle Connection Active</span>
+                                        </motion.div>
+                                    ) : (
+                                        <>
+                                            <div className="w-1 h-1 rounded-full bg-blue-500/40 mr-auto" />
+                                            <div className="w-8 h-1.5 bg-white/10 rounded-full" />
+                                            <div className="w-1.5 h-1.5 rounded-full bg-green-500/40 ml-auto" />
+                                        </>
+                                    )}
+                                </motion.div>
                             </div>
 
                             {/* Side Buttons Visual Details */}

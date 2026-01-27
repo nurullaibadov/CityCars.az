@@ -77,7 +77,7 @@ const News: React.FC = () => {
   return (
     <Layout>
       {/* Hero Section */}
-      <section className="hero-section py-20">
+      <section className="hero-section py-12 md:py-16">
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-5xl font-display font-bold text-primary-foreground mb-4">
             News & Updates
@@ -89,7 +89,7 @@ const News: React.FC = () => {
       </section>
 
       {/* Featured Article */}
-      <section className="py-16 bg-background">
+      <section className="py-12 bg-background">
         <div className="container mx-auto px-4">
           <Card className="overflow-hidden card-gradient border-border shadow-xl hover:shadow-2xl transition-all duration-500">
             <div className="grid lg:grid-cols-2">
@@ -131,7 +131,7 @@ const News: React.FC = () => {
       </section>
 
       {/* News Grid */}
-      <section className="py-16 bg-secondary/30">
+      <section className="py-12 bg-secondary/30">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-display font-bold text-foreground mb-8">
             Latest Articles
@@ -178,7 +178,7 @@ const News: React.FC = () => {
       </section>
 
       {/* Newsletter CTA */}
-      <section className="py-16 bg-background">
+      <section className="py-12 bg-background">
         <div className="container mx-auto px-4">
           <Card className="hero-section border-0 overflow-hidden">
             <CardContent className="p-8 md:p-12 text-center">
