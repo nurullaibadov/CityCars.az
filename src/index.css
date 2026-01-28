@@ -216,8 +216,10 @@
   .glass-card {
     background: var(--glass-bg);
     backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
     border: 1px solid var(--glass-border);
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.08);
+    will-change: backdrop-filter;
   }
 
   .accent-gradient {
@@ -380,6 +382,11 @@
   .animate-gradient-shift {
     animation: gradientShift 8s ease infinite;
     background-size: 200% 200%;
+  }
+
+  .content-visibility-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: 1px 1000px;
   }
 }
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { MapPin, Calendar, Search, Star, Shield, Clock, Car } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -50,20 +50,29 @@ const HeroSection: React.FC = () => {
     }, 500);
   };
 
+  // Memoize particles for better performance
+  const particles = useMemo(() => [...Array(4)].map((_, i) => ({
+    id: i,
+    size: 150 + Math.random() * 150,
+    left: `${Math.random() * 100}%`,
+    top: `${Math.random() * 100}%`,
+    duration: 8 + Math.random() * 7,
+  })), []);
+
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden bg-background">
-      {/* Absolute Background Layer */}
-      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+      {/* Absolute Background Layer - Optimized with will-change */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none will-change-transform">
         <div className="absolute inset-0 geometric-grid opacity-20" />
         <div className="absolute inset-0 geometric-grid-fine opacity-10" />
       </div>
 
       {/* Background Image with Parallax & Overlay */}
       <motion.div
-        initial={{ scale: 1.1, opacity: 0 }}
+        initial={{ scale: 1.05, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 1.5, ease: "easeOut" }}
-        className="absolute inset-0 z-0"
+        transition={{ duration: 1.2, ease: "easeOut" }}
+        className="absolute inset-0 z-0 will-change-transform"
       >
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-1000"
@@ -74,28 +83,29 @@ const HeroSection: React.FC = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
       </motion.div>
 
-      {/* Floating Particles/Elements */}
+      {/* Floating Particles/Elements - Optimized count and will-change */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-        {[...Array(6)].map((_, i) => (
+        {particles.map((p) => (
           <motion.div
-            key={i}
-            initial={{ opacity: 0, y: Math.random() * 100 }}
+            key={p.id}
+            initial={{ opacity: 0 }}
             animate={{
-              opacity: [0.1, 0.3, 0.1],
-              y: [0, -50, 0],
-              x: [0, Math.random() * 20 - 10, 0]
+              opacity: [0.1, 0.2, 0.1],
+              y: [0, -40, 0],
+              x: [0, 15, 0]
             }}
             transition={{
-              duration: 5 + Math.random() * 5,
+              duration: p.duration,
               repeat: Infinity,
               ease: "easeInOut"
             }}
-            className="absolute rounded-full accent-gradient blur-3xl"
+            className="absolute rounded-full accent-gradient blur-3xl will-change-transform"
             style={{
-              width: `${100 + Math.random() * 200}px`,
-              height: `${100 + Math.random() * 200}px`,
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
+              width: `${p.size}px`,
+              height: `${p.size}px`,
+              left: p.left,
+              top: p.top,
+              z: 0
             }}
           />
         ))}
@@ -105,13 +115,13 @@ const HeroSection: React.FC = () => {
       <div className="container mx-auto px-4 relative z-10 py-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <motion.div
-            initial={{ x: -100, opacity: 0 }}
+            initial={{ x: -50, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
             className="text-left"
           >
             <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
+              initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2 }}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card border-accent/20 mb-6"
@@ -158,13 +168,13 @@ const HeroSection: React.FC = () => {
 
           {/* Search Card Section */}
           <motion.div
-            initial={{ x: 100, opacity: 0 }}
+            initial={{ x: 50, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
+            transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
             className="relative"
           >
             <MouseTilt intensity={3}>
-              <div className="glass-card elite-glass rounded-[2rem] p-8 border-accent/10 shadow-huge relative overflow-hidden group hover-glow">
+              <div className="glass-card elite-glass rounded-[2rem] p-8 border-accent/10 shadow-huge relative overflow-hidden group hover-glow will-change-transform">
                 <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
                   <Car className="w-32 h-32 rotate-[-20deg]" />
                 </div>
@@ -253,9 +263,9 @@ const HeroSection: React.FC = () => {
 
       {/* Scroll Down Indicator */}
       <motion.div
-        animate={{ y: [0, 10, 0] }}
+        animate={{ y: [0, 8, 0] }}
         transition={{ duration: 2, repeat: Infinity }}
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 hidden md:flex flex-col items-center gap-2"
+        className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 hidden md:flex flex-col items-center gap-2 will-change-transform"
       >
         <span className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">Scroll</span>
         <div className="w-px h-12 bg-gradient-to-b from-accent to-transparent" />

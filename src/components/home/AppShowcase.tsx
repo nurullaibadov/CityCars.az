@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion, useMotionValue, useTransform, useSpring, AnimatePresence } from 'framer-motion';
 import {
     Smartphone, Apple, PlayCircle, Star, ArrowRight, Download,
@@ -13,14 +13,15 @@ const AppShowcase: React.FC = () => {
     const [isLocked, setIsLocked] = useState(true);
     const [bookingStep, setBookingStep] = useState('idle'); // idle, processing, success
 
-    // 360 Rotation Controls
+    // 360 Rotation Controls - Optimized with better physics
     const rotationX = useMotionValue(0);
     const rotationY = useMotionValue(0);
 
-    const springX = useSpring(rotationX, { damping: 30, stiffness: 200 });
-    const springY = useSpring(rotationY, { damping: 30, stiffness: 200 });
+    const springConfig = { damping: 40, stiffness: 200, mass: 1 };
+    const springX = useSpring(rotationX, springConfig);
+    const springY = useSpring(rotationY, springConfig);
 
-    // Transform drag progress to degrees
+    // Transform drag progress to degrees - simplified transforms for performance
     const rotateX = useTransform(springY, [-300, 300], [15, -15]);
     const rotateY = useTransform(springX, [-300, 300], [-45, 45]);
 
@@ -34,11 +35,19 @@ const AppShowcase: React.FC = () => {
         rotationY.set(0);
     };
 
+    // Memoize static elements to prevent unnecessary re-renders
+    const navItems = useMemo(() => [
+        { id: 'home', icon: Home },
+        { id: 'fleet', icon: Car },
+        { id: 'keys', icon: Key },
+        { id: 'ai', icon: Cpu }
+    ], []);
+
     return (
         <section className="py-32 relative overflow-hidden bg-background">
-            {/* Ambient Background Glows */}
-            <div className="absolute top-0 right-0 w-1/4 h-1/4 accent-gradient opacity-10 blur-[150px] rounded-full" />
-            <div className="absolute bottom-0 left-0 w-1/4 h-1/4 accent-gradient opacity-10 blur-[150px] rounded-full" />
+            {/* Ambient Background Glows - Optimized with will-change */}
+            <div className="absolute top-0 right-0 w-1/4 h-1/4 accent-gradient opacity-10 blur-[150px] rounded-full will-change-transform" />
+            <div className="absolute bottom-0 left-0 w-1/4 h-1/4 accent-gradient opacity-10 blur-[150px] rounded-full will-change-transform" />
 
             <div className="container mx-auto px-4 relative z-10">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
@@ -47,8 +56,8 @@ const AppShowcase: React.FC = () => {
                     <motion.div
                         initial={{ opacity: 0, scale: 0.9 }}
                         whileInView={{ opacity: 1, scale: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 1 }}
+                        viewport={{ once: true, margin: "-100px" }}
+                        transition={{ duration: 0.8 }}
                         className="relative perspective-2000 py-12"
                     >
                         {/* 360 Guidance UI */}
@@ -61,10 +70,10 @@ const AppShowcase: React.FC = () => {
                             drag
                             dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
                             onDrag={handleDrag}
-                            className="relative mx-auto w-[300px] h-[620px] md:w-[340px] md:h-[700px] cursor-grab active:cursor-grabbing preserve-3d group"
+                            className="relative mx-auto w-[300px] h-[620px] md:w-[340px] md:h-[700px] cursor-grab active:cursor-grabbing preserve-3d group will-change-transform"
                         >
                             {/* Device Frame with High-Gloss Bezels */}
-                            <div className="absolute inset-0 bg-[#080808] rounded-[55px] border-[12px] border-[#1a1a1a] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.8)] overflow-hidden">
+                            <div className="absolute inset-0 bg-[#080808] rounded-[55px] border-[12px] border-[#1a1a1a] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.8)] overflow-hidden will-change-transform">
 
                                 {/* Inner Screen Content */}
                                 <div className="absolute inset-0 bg-background flex flex-col overflow-hidden">
@@ -80,14 +89,15 @@ const AppShowcase: React.FC = () => {
 
                                     {/* App Container */}
                                     <div className="flex-1 relative flex flex-col pt-4">
-                                        <AnimatePresence mode="wait">
+                                        <AnimatePresence mode="wait" initial={false}>
                                             {activeScreen === 'home' && (
                                                 <motion.div
                                                     key="home"
-                                                    initial={{ opacity: 0, x: 20 }}
+                                                    initial={{ opacity: 0, x: 10 }}
                                                     animate={{ opacity: 1, x: 0 }}
-                                                    exit={{ opacity: 0, x: -20 }}
-                                                    className="p-6 space-y-6 flex-1 overflow-y-auto no-scrollbar"
+                                                    exit={{ opacity: 0, x: -10 }}
+                                                    transition={{ duration: 0.2 }}
+                                                    className="p-6 space-y-6 flex-1 overflow-y-auto no-scrollbar will-change-[opacity,transform]"
                                                 >
                                                     <div className="flex justify-between items-center">
                                                         <span className="font-display font-black text-xs tracking-widest text-accent">CITYCARS</span>
@@ -140,10 +150,11 @@ const AppShowcase: React.FC = () => {
                                             {activeScreen === 'fleet' && (
                                                 <motion.div
                                                     key="fleet"
-                                                    initial={{ opacity: 0, x: 20 }}
+                                                    initial={{ opacity: 0, x: 10 }}
                                                     animate={{ opacity: 1, x: 0 }}
-                                                    exit={{ opacity: 0, x: -20 }}
-                                                    className="p-6 space-y-6 flex-1 overflow-y-auto no-scrollbar"
+                                                    exit={{ opacity: 0, x: -10 }}
+                                                    transition={{ duration: 0.2 }}
+                                                    className="p-6 space-y-6 flex-1 overflow-y-auto no-scrollbar will-change-[opacity,transform]"
                                                 >
                                                     <h3 className="text-xl font-bold flex items-center gap-2">
                                                         <Car className="text-accent w-5 h-5" /> 360 Fleet
@@ -166,10 +177,11 @@ const AppShowcase: React.FC = () => {
                                             {activeScreen === 'ai' && (
                                                 <motion.div
                                                     key="ai"
-                                                    initial={{ opacity: 0, x: 20 }}
+                                                    initial={{ opacity: 0, x: 10 }}
                                                     animate={{ opacity: 1, x: 0 }}
-                                                    exit={{ opacity: 0, x: -20 }}
-                                                    className="p-6 space-y-8 flex-1 flex flex-col items-center justify-center text-center"
+                                                    exit={{ opacity: 0, x: -10 }}
+                                                    transition={{ duration: 0.2 }}
+                                                    className="p-6 space-y-8 flex-1 flex flex-col items-center justify-center text-center will-change-[opacity,transform]"
                                                 >
                                                     <div className="w-20 h-20 rounded-full accent-gradient flex items-center justify-center shadow-[0_0_30px_rgba(var(--accent-rgb),0.5)] animate-pulse">
                                                         <Cpu className="w-10 h-10 text-accent-foreground" />
@@ -191,10 +203,11 @@ const AppShowcase: React.FC = () => {
                                             {activeScreen === 'keys' && (
                                                 <motion.div
                                                     key="keys"
-                                                    initial={{ opacity: 0, scale: 0.9 }}
+                                                    initial={{ opacity: 0, scale: 0.95 }}
                                                     animate={{ opacity: 1, scale: 1 }}
-                                                    exit={{ opacity: 0, scale: 0.9 }}
-                                                    className="p-6 space-y-8 flex-1 flex flex-col items-center justify-center"
+                                                    exit={{ opacity: 0, scale: 0.95 }}
+                                                    transition={{ duration: 0.2 }}
+                                                    className="p-6 space-y-8 flex-1 flex flex-col items-center justify-center will-change-[opacity,transform]"
                                                 >
                                                     <div className="relative group/key">
                                                         <motion.div
@@ -229,7 +242,7 @@ const AppShowcase: React.FC = () => {
                                                         {/* Signal Ripples when unlocking */}
                                                         {!isLocked && (
                                                             <div className="absolute inset-0 pointer-events-none">
-                                                                {[1, 2, 3].map(i => (
+                                                                {[1, 2].map(i => (
                                                                     <motion.div
                                                                         key={i}
                                                                         initial={{ opacity: 0, scale: 0.8 }}
@@ -244,48 +257,12 @@ const AppShowcase: React.FC = () => {
                                                     <p className="text-xs text-center text-muted-foreground font-medium px-4">Tap the unlock icon to connect with your vehicle via secure Bluetooth.</p>
                                                 </motion.div>
                                             )}
-
-                                            {bookingStep !== 'idle' && (
-                                                <motion.div
-                                                    initial={{ opacity: 0, y: 20 }}
-                                                    animate={{ opacity: 1, y: 0 }}
-                                                    className="absolute inset-x-6 top-1/2 -translate-y-1/2 z-[100] glass-card elite-glass p-8 rounded-[3rem] border-accent/30 shadow-huge text-center"
-                                                >
-                                                    {bookingStep === 'processing' ? (
-                                                        <div className="space-y-6">
-                                                            <div className="w-16 h-16 rounded-full border-4 border-accent/20 border-t-accent animate-spin mx-auto" />
-                                                            <p className="font-bold text-accent">Securing Vehicle...</p>
-                                                        </div>
-                                                    ) : (
-                                                        <div className="space-y-6">
-                                                            <div className="w-20 h-20 rounded-full bg-green-500/20 flex items-center justify-center mx-auto text-green-500">
-                                                                <CheckCircle className="w-10 h-10" />
-                                                            </div>
-                                                            <div className="space-y-2">
-                                                                <h4 className="font-display font-bold text-xl">Booking Confirmed!</h4>
-                                                                <p className="text-xs text-muted-foreground">Your luxury ride is waiting at our Baku Premium Lounge.</p>
-                                                            </div>
-                                                            <Button
-                                                                onClick={() => setBookingStep('idle')}
-                                                                className="w-full h-12 rounded-xl accent-gradient font-bold"
-                                                            >
-                                                                Dismiss
-                                                            </Button>
-                                                        </div>
-                                                    )}
-                                                </motion.div>
-                                            )}
                                         </AnimatePresence>
                                     </div>
 
                                     {/* Interactive Tab Bar */}
                                     <div className="h-20 bg-card/80 backdrop-blur-2xl border-t border-border flex justify-around items-center px-4 relative">
-                                        {[
-                                            { id: 'home', icon: Home },
-                                            { id: 'fleet', icon: Car },
-                                            { id: 'keys', icon: Key },
-                                            { id: 'ai', icon: Cpu }
-                                        ].map((item) => (
+                                        {navItems.map((item) => (
                                             <button
                                                 key={item.id}
                                                 onClick={() => setActiveScreen(item.id)}
@@ -310,6 +287,7 @@ const AppShowcase: React.FC = () => {
                                         height: isIslandExpanded ? 40 : 28,
                                         borderRadius: isIslandExpanded ? 20 : 24
                                     }}
+                                    transition={{ type: "spring", damping: 20, stiffness: 300 }}
                                     className="absolute top-2 left-1/2 -translate-x-1/2 bg-black z-50 flex items-center justify-center px-4 overflow-hidden border border-white/5"
                                 >
                                     {isIslandExpanded ? (
@@ -365,7 +343,7 @@ const AppShowcase: React.FC = () => {
                         initial={{ opacity: 0, x: 50 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
-                        transition={{ duration: 1 }}
+                        transition={{ duration: 0.8 }}
                     >
                         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card border-accent/20 mb-8">
                             <Smartphone className="w-4 h-4 text-accent" />

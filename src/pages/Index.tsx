@@ -22,20 +22,22 @@ const Index: React.FC = () => {
     <Layout>
       <HeroSection />
       <BrandMarquee />
-      <FeaturedCars />
-      <Car360Viewer />
-      <FleetSpotlight />
-      <VIPSection />
-      <StatsSection />
-      <LuxuryConcierge />
-      <AIConcierge />
-      <WhyChooseUs />
-      <HowItWorks />
-      <SpecialOffers />
-      <DashboardTeaser />
-      <TestimonialsCarousel />
-      <AppShowcase />
-      <Newsletter />
+      <div className="content-visibility-auto">
+        <FeaturedCars />
+        <Car360Viewer />
+        <FleetSpotlight />
+        <VIPSection />
+        <StatsSection />
+        <LuxuryConcierge />
+        <AIConcierge />
+        <WhyChooseUs />
+        <HowItWorks />
+        <SpecialOffers />
+        <DashboardTeaser />
+        <TestimonialsCarousel />
+        <AppShowcase />
+        <Newsletter />
+      </div>
     </Layout>
   );
 };
